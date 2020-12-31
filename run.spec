@@ -4,7 +4,6 @@ block_cipher = None
 
 
 a = Analysis(['mc_autosplit\\run.py'],
-             pathex=['.', 'C:\\Users\\dylan\\OneDrive\\Documents\\Minecraft\\mc_autosplit'],
              binaries=[],
              datas=[],
              hiddenimports=['nbt.world'],
