@@ -1,0 +1,2 @@
+class FailedToReadAdvancements(Exception):
+    pass

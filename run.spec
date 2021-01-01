@@ -4,7 +4,6 @@ block_cipher = None
 
 
 a = Analysis(['mc_autosplit\\run.py'],
-             pathex=['.', 'C:\\Users\\dylan\\OneDrive\\Documents\\Minecraft\\mc_autosplit'],
              binaries=[],
              datas=[],
              hiddenimports=['nbt.world'],
@@ -15,6 +14,8 @@ a = Analysis(['mc_autosplit\\run.py'],
              win_private_assemblies=False,
              cipher=block_cipher,
              noarchive=False)
+a.datas += [('logo.png','assets\\logo.png','DATA')]
+
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
@@ -30,4 +31,5 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=True )
+          console=True,
+          icon='assets\\logo.ico' )

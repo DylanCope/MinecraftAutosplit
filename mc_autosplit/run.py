@@ -2,6 +2,7 @@ import msvcrt
 import time
 from threading import Thread
 
+from mc_autosplit.utils.exception import FailedToReadAdvancements
 from mc_autosplit.utils.mc_utils import get_last_played_level, get_advancements
 from mc_autosplit.splitting import handle_advancement_changes
 from mc_autosplit.watcher import PathWatcher
@@ -43,17 +44,27 @@ class Runner:
     def advancement_watcher_callback(self, _, __):
         self.check_advancements_changed()
 
+    def _check_advancements_changed(self):
+        advancements_updated = get_advancements(self.level_path)
+        if advancements_updated != self.advancements:
+            new_advancements = set(advancements_updated) - set(self.advancements)
+            print('Detected Advancements: ', new_advancements)
+            handle_advancement_changes(set(self.advancements), new_advancements)
+            self.advancements = advancements_updated
+
     def check_advancements_changed(self):
-        try:
-            advancements_updated = get_advancements(self.level_path)
-            if advancements_updated != self.advancements:
-                new_advancements = set(advancements_updated) - set(self.advancements)
-                print('Detected Advancements: ', new_advancements)
-                handle_advancement_changes(set(self.advancements), new_advancements)
-                self.advancements = advancements_updated
-        except FileNotFoundError:
-            print('World being watched has been disappeared!')
-            self.reset()
+        have_checked = False
+        while not have_checked:
+            try:
+                self._check_advancements_changed()
+                have_checked = True
+            except FileNotFoundError:
+                print('World being watched has been disappeared!')
+                self.reset()
+                have_checked = True
+            except FailedToReadAdvancements:
+                print('Failed to read advancements... trying again in 1 second')
+                time.sleep(1)
 
     def watch_user_input(self):
         while True:

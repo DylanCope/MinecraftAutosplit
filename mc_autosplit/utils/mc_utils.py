@@ -5,6 +5,8 @@ from pathlib import Path
 
 from nbt import nbt
 
+from mc_autosplit.utils.exception import FailedToReadAdvancements
+
 
 def get_default_minecraft_dir():
     if sys.platform == "win32":
@@ -49,7 +51,10 @@ def get_advancements(level_path):
     advancements_dir = level_path / 'advancements'
     advancements_path = advancements_dir / os.listdir(advancements_dir)[0]
 
-    with open(advancements_path, "r") as f:
-        advancements = json.load(f)
+    try:
+        with open(advancements_path, "r") as f:
+            advancements = json.load(f)
+    except json.decoder.JSONDecodeError:
+        raise FailedToReadAdvancements()
 
     return advancements
