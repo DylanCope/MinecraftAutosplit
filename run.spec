@@ -1,7 +1,7 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 block_cipher = None
-
+specpath = os.path.dirname(os.path.abspath(SPEC))
 
 a = Analysis(['mc_autosplit\\run.py'],
              binaries=[],
@@ -18,6 +18,7 @@ a.datas += [('logo.png','assets\\logo.png','DATA')]
 
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
+
 exe = EXE(pyz,
           a.scripts,
           a.binaries,
@@ -32,4 +33,4 @@ exe = EXE(pyz,
           upx_exclude=[],
           runtime_tmpdir=None,
           console=True,
-          icon='assets\\logo.ico' )
+          icon=os.path.join(specpath, 'assets\\logo.ico'))
